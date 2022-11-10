@@ -1,6 +1,7 @@
 const express = require("express")
 const app = express();
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require ('dotenv').config();
 const Port = process.env.Port || 5000;
@@ -24,6 +25,16 @@ async function run() {
         const serviceCollection = client.db('quickEat').collection('services');
         const reviewCollection = client.db('quickEat').collection('reviews');
         
+
+        app.post('/jwt', (req, res) =>{
+            const user = req.body;
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d'})
+            res.send({token})
+        })  
+
+
+        
+
         app.get('/services', async (req, res) => {
             const count=parseInt(req.query.count);
             const cursor = serviceCollection.find({});
